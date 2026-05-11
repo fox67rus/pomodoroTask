@@ -5,9 +5,11 @@ __pycache__/
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+.cursor/
 .venv/
 venv/
 .env
 *.db
 test_task_tracker.db
 task_tracker.db
+ТЗ Таск-трекер с Kanban-доской.md
