@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="mx-auto max-w-md rounded-2xl border border-slate-800 bg-slate-900/70 p-8 shadow-xl">
+    <h1 class="mb-2 text-3xl font-bold">Регистрация</h1>
+    <p class="mb-6 text-slate-400">Создайте личное пространство для задач и Pomodoro.</p>
+    {% if error %}
+        <div class="mb-4 rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-200">{{ error }}</div>
+    {% endif %}
+    <form class="space-y-4" action="/auth/register" method="post">
+        <label class="block">
+            <span class="form-label">Email</span>
+            <input class="form-input" name="email" type="email" required>
+        </label>
+        <label class="block">
+            <span class="form-label">Имя</span>
+            <input class="form-input" name="username" minlength="2" required>
+        </label>
+        <label class="block">
+            <span class="form-label">Пароль</span>
+            <input class="form-input" name="password" type="password" minlength="6" required>
+        </label>
+        <button class="primary-button w-full" type="submit">Создать аккаунт</button>
+    </form>
+    <p class="mt-5 text-sm text-slate-400">Уже есть аккаунт? <a class="text-cyan-300" href="/auth/login">Войдите</a>.</p>
+</section>
+{% endblock %}

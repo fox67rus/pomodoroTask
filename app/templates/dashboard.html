@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="mb-8">
+    <h1 class="text-3xl font-bold">Привет, {{ user.username }}</h1>
+    <p class="text-slate-400">Сегодня хороший день, чтобы закрыть пару задач и сохранить фокус.</p>
+</section>
+
+<section class="mb-8 grid gap-4 md:grid-cols-3">
+    <div class="stat-card">
+        <span class="stat-label">Выполнено задач</span>
+        <strong class="stat-value">{{ stats.done }}</strong>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Просрочено</span>
+        <strong class="stat-value">{{ stats.overdue }}</strong>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Pomodoro сегодня</span>
+        <strong class="stat-value">{{ pomodoro_today }}</strong>
+    </div>
+</section>
+
+<section class="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+        <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Ближайшие задачи</h2>
+            <a class="text-sm text-cyan-300" href="/kanban">Открыть доску</a>
+        </div>
+        <div class="space-y-3">
+            {% for task in tasks[:6] %}
+                {% include "partials/task_card.html" %}
+            {% else %}
+                <div class="rounded-xl border border-dashed border-slate-700 p-8 text-center text-slate-500">
+                    Задач пока нет. <a class="text-cyan-300" href="/tasks/new">Создать первую</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+        <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Быстрый Pomodoro</h2>
+            <a class="text-sm text-cyan-300" href="/pomodoro">Полный таймер</a>
+        </div>
+        <form class="space-y-4" action="/pomodoro/sessions/html" method="post">
+            <label class="block">
+                <span class="form-label">Задача</span>
+                <select class="form-input" name="task_id">
+                    <option value="">Без задачи</option>
+                    {% for task in tasks %}
+                        <option value="{{ task.id }}">{{ task.title }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <input type="hidden" name="session_type" value="work">
+            <input type="hidden" name="duration_minutes" value="25">
+            <button class="primary-button w-full" type="submit">Засчитать 25 минут</button>
+        </form>
+        <div class="mt-6 space-y-2 text-sm text-slate-400">
+            {% for session in recent_sessions %}
+                <p>{{ session.duration_minutes }} мин · {{ session.session_type.value }}</p>
+            {% else %}
+                <p>История фокус-сессий пока пустая.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

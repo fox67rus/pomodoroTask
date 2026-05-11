@@ -1,0 +1,14 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+.coverage
+htmlcov
+.env
+*.db
+test_task_tracker.db
+task_tracker.db
+.cursor
+.cursorignore

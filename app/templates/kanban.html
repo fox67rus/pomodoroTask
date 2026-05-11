@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div>
+        <h1 class="text-3xl font-bold">Kanban-доска</h1>
+        <p class="text-slate-400">Перетаскивайте карточки между колонками, статус сохранится автоматически.</p>
+    </div>
+    <a class="primary-button" href="/tasks/new">Добавить задачу</a>
+</div>
+
+<section class="grid gap-4 lg:grid-cols-3">
+    {% set names = {'todo': 'To Do', 'in_progress': 'In Progress', 'done': 'Done'} %}
+    {% for status, tasks in columns.items() %}
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="font-semibold">{{ names[status.value] }}</h2>
+                <span class="rounded-full bg-slate-800 px-2 py-1 text-xs text-slate-400">{{ tasks|length }}</span>
+            </div>
+            <div class="kanban-column min-h-80 space-y-3" data-status="{{ status.value }}">
+                {% for task in tasks %}
+                    {% include "partials/task_card.html" %}
+                {% else %}
+                    <div class="empty-column rounded-xl border border-dashed border-slate-700 p-6 text-center text-sm text-slate-500">Пока пусто</div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</section>
+{% endblock %}

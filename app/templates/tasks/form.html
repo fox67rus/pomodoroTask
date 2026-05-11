@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="mx-auto max-w-2xl rounded-2xl border border-slate-800 bg-slate-900/70 p-8">
+    <h1 class="mb-6 text-3xl font-bold">{{ "Редактировать задачу" if task else "Новая задача" }}</h1>
+    <form class="space-y-5" action="{{ '/tasks/' ~ task.id ~ '/edit' if task else '/tasks' }}" method="post">
+        <label class="block">
+            <span class="form-label">Название</span>
+            <input class="form-input" name="title" value="{{ task.title if task else '' }}" required>
+        </label>
+        <label class="block">
+            <span class="form-label">Описание</span>
+            <textarea class="form-input min-h-28" name="description">{{ task.description if task and task.description else '' }}</textarea>
+        </label>
+        <div class="grid gap-4 md:grid-cols-2">
+            <label class="block">
+                <span class="form-label">Статус</span>
+                <select class="form-input" name="status">
+                    {% for item in statuses %}
+                        <option value="{{ item.value }}" {% if task and task.status == item %}selected{% endif %}>{{ item.value }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="block">
+                <span class="form-label">Приоритет</span>
+                <select class="form-input" name="priority">
+                    {% for item in priorities %}
+                        <option value="{{ item.value }}" {% if task and task.priority == item %}selected{% endif %}>{{ item.value }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2">
+            <label class="block">
+                <span class="form-label">Дедлайн</span>
+                <input class="form-input" name="deadline" type="datetime-local" value="{{ task.deadline.strftime('%Y-%m-%dT%H:%M') if task and task.deadline else '' }}">
+            </label>
+            <label class="block">
+                <span class="form-label">Теги через запятую</span>
+                <input class="form-input" name="tags" value="{{ task.tags|join(', ') if task else '' }}">
+            </label>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <button class="primary-button" type="submit">Сохранить</button>
+            <a class="secondary-button" href="/kanban">Отмена</a>
+        </div>
+    </form>
+    {% if task %}
+        <form class="mt-6" action="/tasks/{{ task.id }}/delete" method="post">
+            <button class="rounded-lg bg-red-500/20 px-4 py-2 text-sm font-semibold text-red-200 hover:bg-red-500/30" type="submit">Удалить задачу</button>
+        </form>
+    {% endif %}
+</section>
+{% endblock %}

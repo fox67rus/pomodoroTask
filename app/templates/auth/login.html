@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="mx-auto max-w-md rounded-2xl border border-slate-800 bg-slate-900/70 p-8 shadow-xl">
+    <h1 class="mb-2 text-3xl font-bold">Вход</h1>
+    <p class="mb-6 text-slate-400">Продолжите работу с задачами и фокус-сессиями.</p>
+    {% if error %}
+        <div class="mb-4 rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-200">{{ error }}</div>
+    {% endif %}
+    <form class="space-y-4" action="/auth/login" method="post">
+        <label class="block">
+            <span class="form-label">Email или имя</span>
+            <input class="form-input" name="login" required>
+        </label>
+        <label class="block">
+            <span class="form-label">Пароль</span>
+            <input class="form-input" name="password" type="password" required>
+        </label>
+        <button class="primary-button w-full" type="submit">Войти</button>
+    </form>
+    <p class="mt-5 text-sm text-slate-400">Нет аккаунта? <a class="text-cyan-300" href="/auth/register">Создайте его</a>.</p>
+</section>
+{% endblock %}

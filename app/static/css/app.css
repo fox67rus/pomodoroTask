@@ -1,0 +1,82 @@
+.nav-link {
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.nav-link:hover {
+    background: rgb(30 41 59);
+    color: rgb(224 242 254);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: rgb(203 213 225);
+    font-size: 0.875rem;
+}
+
+.form-input {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(51 65 85);
+    background: rgb(15 23 42);
+    padding: 0.75rem 0.9rem;
+    color: rgb(248 250 252);
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: rgb(34 211 238);
+    box-shadow: 0 0 0 3px rgb(34 211 238 / 0.15);
+}
+
+.primary-button,
+.secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+}
+
+.primary-button {
+    background: rgb(34 211 238);
+    color: rgb(2 6 23);
+}
+
+.primary-button:hover {
+    background: rgb(103 232 249);
+}
+
+.secondary-button {
+    background: rgb(30 41 59);
+    color: rgb(226 232 240);
+}
+
+.secondary-button:hover {
+    background: rgb(51 65 85);
+}
+
+.stat-card {
+    border: 1px solid rgb(30 41 59);
+    border-radius: 1rem;
+    background: rgb(15 23 42 / 0.75);
+    padding: 1.25rem;
+}
+
+.stat-label {
+    display: block;
+    color: rgb(148 163 184);
+    font-size: 0.875rem;
+}
+
+.stat-value {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 2rem;
+}
+
+.sortable-ghost {
+    opacity: 0.35;
+}

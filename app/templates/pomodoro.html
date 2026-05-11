@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+    <div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-8" data-pomodoro>
+        <h1 class="mb-2 text-3xl font-bold">Pomodoro-таймер</h1>
+        <p class="mb-8 text-slate-400">25 минут фокуса, короткий перерыв и длинный перерыв после четырёх циклов.</p>
+        <form class="mb-8 grid gap-4 md:grid-cols-2" data-pomodoro-form>
+            <label class="block md:col-span-2">
+                <span class="form-label">Задача</span>
+                <select class="form-input" name="task_id">
+                    <option value="">Без задачи</option>
+                    {% for task in tasks %}
+                        <option value="{{ task.id }}">{{ task.title }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="block">
+                <span class="form-label">Режим</span>
+                <select class="form-input" name="session_type" data-mode>
+                    <option value="work" data-minutes="25">Работа 25 мин</option>
+                    <option value="short_break" data-minutes="5">Короткий перерыв 5 мин</option>
+                    <option value="long_break" data-minutes="15">Длинный перерыв 15 мин</option>
+                </select>
+            </label>
+            <label class="block">
+                <span class="form-label">Длительность</span>
+                <input class="form-input" name="duration_minutes" data-duration type="number" min="1" max="180" value="25">
+            </label>
+        </form>
+        <div class="mb-8 text-center">
+            <div class="font-mono text-7xl font-bold tracking-tight" data-time>25:00</div>
+            <p class="mt-2 text-sm text-slate-400" data-status>Готов к старту</p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-3">
+            <button class="primary-button" type="button" data-start>Старт</button>
+            <button class="secondary-button" type="button" data-pause>Пауза</button>
+            <button class="secondary-button" type="button" data-reset>Сброс</button>
+        </div>
+    </div>
+    <aside class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6">
+        <h2 class="mb-4 text-xl font-semibold">История</h2>
+        <div class="space-y-3">
+            {% for session in recent_sessions %}
+                <div class="rounded-xl bg-slate-800/70 p-3 text-sm">
+                    <div class="font-medium">{{ session.duration_minutes }} мин · {{ session.session_type.value }}</div>
+                    <div class="text-slate-400">{% if session.task %}{{ session.task.title }}{% else %}Без задачи{% endif %}</div>
+                </div>
+            {% else %}
+                <p class="text-slate-500">Завершённые сессии появятся здесь.</p>
+            {% endfor %}
+        </div>
+    </aside>
+</section>
+{% endblock %}

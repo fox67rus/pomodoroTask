@@ -1,0 +1,49 @@
+# .cursorignore для проекта FastAPI + SQLAlchemy 2.0 + HTMX + Tailwind CSS
+
+# Python окружение
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+env/
+*.sqlite3
+
+# Миграции Alembic
+alembic/versions/
+
+# Базы данных (локально)
+*.db
+
+# Node.js зависимости (Tailwind, возможно для HTMX)
+node_modules/
+dist/
+build/
+package-lock.json
+yarn.lock
+
+# Логи и временные файлы
+*.log
+.DS_Store
+*.tmp
+
+# IDE/Editor файлы
+.vscode/
+.idea/
+*.swp
+
+# Docker артефакты
+*.pid
+
+# Игнорировать тестовые артефакты
+htmlcov/
+.coverage
+.tox/
+.cache/
+pytest_cache/
+
+# Индексы и артефакты Cursor
+#.cursor/
+#cursor.lock
