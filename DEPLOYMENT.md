@@ -12,7 +12,7 @@
 Папка проекта на сервере задана прямо в workflow:
 
 ```bash
-/opt/pomodoro-task
+/opt/apps/projects/pomodoro-task
 ```
 
 Если нужен другой путь, измени переменную `PROJECT_DIR` в `.github/workflows/deploy.yml`.
@@ -41,10 +41,10 @@ git --version
 Создай папку проекта и склонируй репозиторий:
 
 ```bash
-sudo mkdir -p /opt/pomodoro-task
-sudo chown -R $USER:$USER /opt/pomodoro-task
-git clone https://github.com/fox67rus/pomodoroTask.git /opt/pomodoro-task
-cd /opt/pomodoro-task
+sudo mkdir -p /opt/apps/projects/pomodoro-task
+sudo chown -R $USER:$USER /opt/apps/projects/pomodoro-task
+git clone https://github.com/fox67rus/pomodoroTask.git /opt/apps/projects/pomodoro-task
+cd /opt/apps/projects/pomodoro-task
 ```
 
 Проверь, что сервер может читать GitHub Container Registry:
@@ -71,7 +71,7 @@ DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/task_tracker
 После подготовки сервера можно проверить запуск:
 
 ```bash
-cd /opt/pomodoro-task
+cd /opt/apps/projects/pomodoro-task
 docker compose pull web
 docker compose up -d
 docker compose ps

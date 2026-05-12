@@ -53,7 +53,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || '22' }}
           script: |
-            PROJECT_DIR="/opt/pomodoro-task"
+            PROJECT_DIR="/opt/apps/projects/pomodoro-task"
             WEB_IMAGE="ghcr.io/${{ github.repository_owner }}/task-tracker:${{ github.sha }}"
             
             echo "🚀 Деплой в: $PROJECT_DIR"
