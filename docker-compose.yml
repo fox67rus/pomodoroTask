@@ -1,5 +1,6 @@
 services:
   web:
+    image: ${WEB_IMAGE:-ghcr.io/fox67rus/task-tracker:latest}
     build: .
     ports:
       - "8000:8000"

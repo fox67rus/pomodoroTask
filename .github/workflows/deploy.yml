@@ -5,7 +5,8 @@ on:
     branches: [ main ]          # ← только main!
 
 jobs:
-  build-and-deploy:
+  build:
+    name: Build Docker image
     runs-on: ubuntu-latest
 
     permissions:
@@ -16,7 +17,6 @@ jobs:
       - name: Checkout код
         uses: actions/checkout@v4
 
-      # ==================== СБОРКА И ПУШ ====================
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -35,7 +35,16 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # ==================== ДЕПЛОЙ НА СЕРВЕР ====================
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    needs: build
+
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -44,23 +53,25 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || '22' }}
           script: |
-            PROJECT_DIR="${{ secrets.PROJECT_DIR }}"
+            PROJECT_DIR="/opt/pomodoro-task"
+            WEB_IMAGE="ghcr.io/${{ github.repository_owner }}/task-tracker:${{ github.sha }}"
             
             echo "🚀 Деплой в: $PROJECT_DIR"
-            mkdir -p $PROJECT_DIR
-            cd $PROJECT_DIR
+            mkdir -p "$PROJECT_DIR"
+            cd "$PROJECT_DIR"
 
             echo "📥 Подтягиваем main..."
             git pull origin main --ff-only
 
             echo "🔑 Логинимся в GHCR..."
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
             echo "📦 Тянем новый образ..."
+            export WEB_IMAGE
             docker compose pull web
 
             echo "♻️  Перезапускаем web..."
-            docker compose up -d --no-deps --build web
+            docker compose up -d --no-deps web
 
             echo "✅ Деплой завершён! $(date)"
             docker compose ps
