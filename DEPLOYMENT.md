@@ -93,6 +93,16 @@ docker compose ps
 docker compose logs --tail=50 web
 ```
 
+Если `web` падает с ошибкой `connection refused` к PostgreSQL сразу после первого запуска, проверь состояние healthcheck БД:
+
+```bash
+docker compose ps
+docker compose logs --tail=50 db
+docker compose up -d web
+```
+
+`web` должен стартовать только после того, как `db` перейдёт в состояние `healthy`.
+
 ## Автоматический деплой
 
 После настройки secrets каждый push в `main` запустит:
