@@ -51,23 +51,25 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || '22' }}
           script: |
-            PROJECT_DIR="${{ secrets.PROJECT_DIR }}"
-            
+            PROJECT_DIR="/opt/apps/projects/pomodoro-task"
+            WEB_IMAGE="ghcr.io/${{ github.repository_owner }}/task-tracker:${{ github.sha }}"
+
             echo "🚀 Деплой в: $PROJECT_DIR"
-            mkdir -p $PROJECT_DIR
-            cd $PROJECT_DIR
+            mkdir -p "$PROJECT_DIR"
+            cd "$PROJECT_DIR"
 
             echo "📥 Подтягиваем main..."
             git pull origin main --ff-only
 
             echo "🔑 Логинимся в GHCR..."
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
             echo "📦 Тянем новый образ..."
+            export WEB_IMAGE
             docker compose pull web
 
             echo "♻️ Перезапускаем web..."
-            docker compose up -d --no-deps --build web
+            docker compose up -d --no-deps web
 
             echo "✅ Деплой завершён! $(date)"
             docker compose ps
