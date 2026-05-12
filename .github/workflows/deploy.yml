@@ -41,6 +41,9 @@ jobs:
   deploy:
     needs: build          # ждём успешной сборки
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
 
     steps:
       - name: Deploy to Server
@@ -62,7 +65,7 @@ jobs:
             git pull origin main --ff-only
 
             echo "🔑 Логинимся в GHCR..."
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
             echo "📦 Тянем новый образ..."
             export WEB_IMAGE
