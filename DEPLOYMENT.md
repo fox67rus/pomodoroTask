@@ -57,14 +57,29 @@ docker login ghcr.io
 
 ## Переменные приложения
 
-Сейчас `docker-compose.yml` содержит production-переменные прямо в файле:
+Production-секреты не хранятся в Git. `docker-compose.yml` читает их из `.env` на сервере.
 
-```yaml
-SECRET_KEY: change-me
-DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/task_tracker
+Создай `.env` из примера:
+
+```bash
+cd /opt/apps/projects/pomodoro-task
+cp .env.production.example .env
+nano .env
 ```
 
-Перед реальным production-запуском замени `SECRET_KEY` и пароли PostgreSQL на безопасные значения. Лучше вынести их в `.env` на сервере и не хранить реальные секреты в Git.
+Заполни реальные значения:
+
+```env
+APP_ENV=production
+SECRET_KEY=replace-with-a-long-random-secret-key
+ACCESS_TOKEN_EXPIRE_MINUTES=10080
+
+POSTGRES_DB=task_tracker
+POSTGRES_USER=task_tracker_user
+POSTGRES_PASSWORD=replace-with-a-strong-database-password
+```
+
+`SECRET_KEY` и `POSTGRES_PASSWORD` должны быть уникальными сильными значениями. Файл `.env` уже добавлен в `.gitignore`, его нельзя коммитить.
 
 ## Первый запуск вручную
 
