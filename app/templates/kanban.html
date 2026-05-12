@@ -10,7 +10,7 @@
 </div>
 
 <section class="grid gap-4 lg:grid-cols-3">
-    {% set names = {'todo': 'To Do', 'in_progress': 'In Progress', 'done': 'Done'} %}
+    {% set names = {'todo': 'К выполнению', 'in_progress': 'В работе', 'done': 'Готово'} %}
     {% for status, tasks in columns.items() %}
         <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
             <div class="mb-4 flex items-center justify-between">
