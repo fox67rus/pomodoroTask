@@ -1,4 +1,5 @@
 <article class="task-card rounded-xl border border-slate-700 bg-slate-900 p-4 shadow-lg" data-task-id="{{ task.id }}">
+    {% set priority_labels = {'low': 'Низкий', 'medium': 'Средний', 'high': 'Высокий'} %}
     <div class="mb-3 flex items-start justify-between gap-3">
         <div>
             <h3 class="font-semibold text-slate-50">{{ task.title }}</h3>
@@ -10,7 +11,7 @@
             {% if task.priority.value == 'high' %}bg-red-500/20 text-red-200
             {% elif task.priority.value == 'medium' %}bg-amber-500/20 text-amber-200
             {% else %}bg-emerald-500/20 text-emerald-200{% endif %}">
-            {{ task.priority.value }}
+            {{ priority_labels[task.priority.value] }}
         </span>
     </div>
     <div class="mb-3 flex flex-wrap gap-2">
