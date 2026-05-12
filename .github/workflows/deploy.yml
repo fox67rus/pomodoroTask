@@ -1,8 +1,8 @@
-name: 🚀 Deploy Task Tracker
+name: 🚀 Deploy to Production (main)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]          # ← только main!
 
 jobs:
   build-and-deploy:
@@ -16,15 +16,15 @@ jobs:
       - name: Checkout код
         uses: actions/checkout@v4
 
-      # ==================== СБОРКА И ПУШ В GHCR ====================
-      - name: Login to GitHub Container Registry
+      # ==================== СБОРКА И ПУШ ====================
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push web image
+      - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -34,10 +34,9 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/task-tracker:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # Если у тебя multi-stage Dockerfile — можно добавить build-args
 
       # ==================== ДЕПЛОЙ НА СЕРВЕР ====================
-      - name: Deploy to Server via SSH
+      - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -45,16 +44,24 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || '22' }}
           script: |
-            cd /var/www/task-tracker
+            PROJECT_DIR="${{ secrets.PROJECT_DIR }}"
+            
+            echo "🚀 Деплой в: $PROJECT_DIR"
+            mkdir -p $PROJECT_DIR
+            cd $PROJECT_DIR
 
-            # Логинимся в GHCR
+            echo "📥 Подтягиваем main..."
+            git pull origin main --ff-only
+
+            echo "🔑 Логинимся в GHCR..."
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Тянем свежий образ
+            echo "📦 Тянем новый образ..."
             docker compose pull web
 
-            # Перезапускаем только web (db остаётся нетронутым)
-            docker compose up -d --no-deps web
+            echo "♻️  Перезапускаем web..."
+            docker compose up -d --no-deps --build web
 
             echo "✅ Деплой завершён! $(date)"
             docker compose ps
+            docker compose logs --tail=15 web
