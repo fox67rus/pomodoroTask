@@ -77,12 +77,13 @@ jobs:
             echo "🔑 Логинимся в GHCR..."
             echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
-            echo "📦 Тянем новый образ..."
+            echo "📦 Тянем образы (web + db)..."
             export WEB_IMAGE
-            docker compose -f "$COMPOSE_FILE" pull web
+            docker compose -f "$COMPOSE_FILE" pull web db
 
-            echo "♻️ Перезапускаем web..."
-            docker compose -f "$COMPOSE_FILE" up -d --no-deps web
+            # Без --no-deps: поднимется PostgreSQL (db), иначе хост `db` в БД не резолвится — см. lifespan/SQLAlchemy.
+            echo "♻️ Перезапускаем стек (web с зависимостью db)..."
+            docker compose -f "$COMPOSE_FILE" up -d web
 
             echo "✅ Деплой завершён! $(date)"
             docker compose -f "$COMPOSE_FILE" ps
