@@ -54,8 +54,18 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || '22' }}
           script: |
-            PROJECT_DIR="/opt/apps/projects/pomodoro-task"
+            set -euo pipefail
+
+            # Репозиторная переменная DEPLOY_PROJECT_DIR (опционально). Пустая строка из секрета ломала деплой — игнорируем и берём дефолт.
+            RAW_DIR="${{ vars.DEPLOY_PROJECT_DIR }}"
+            PROJECT_DIR="${RAW_DIR:-/opt/apps/projects/pomodoro-task}"
+            COMPOSE_FILE="$PROJECT_DIR/docker-compose.yml"
             WEB_IMAGE="ghcr.io/${{ github.repository_owner }}/task-tracker:${{ github.sha }}"
+
+            if [ ! -f "$COMPOSE_FILE" ]; then
+              echo "❌ Нет $COMPOSE_FILE — проверьте DEPLOY_PROJECT_DIR (сейчас: $PROJECT_DIR) и клон репозитория на сервере."
+              exit 1
+            fi
 
             echo "🚀 Деплой в: $PROJECT_DIR"
             mkdir -p "$PROJECT_DIR"
@@ -69,11 +79,11 @@ jobs:
 
             echo "📦 Тянем новый образ..."
             export WEB_IMAGE
-            docker compose pull web
+            docker compose -f "$COMPOSE_FILE" pull web
 
             echo "♻️ Перезапускаем web..."
-            docker compose up -d --no-deps web
+            docker compose -f "$COMPOSE_FILE" up -d --no-deps web
 
             echo "✅ Деплой завершён! $(date)"
-            docker compose ps
-            docker compose logs --tail=20 web
+            docker compose -f "$COMPOSE_FILE" ps
+            docker compose -f "$COMPOSE_FILE" logs --tail=20 web
